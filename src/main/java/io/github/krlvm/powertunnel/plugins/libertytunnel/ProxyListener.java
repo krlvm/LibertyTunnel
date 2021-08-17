@@ -71,7 +71,7 @@ public final class ProxyListener extends ProxyAdapter {
             final String fakeSni
     ) {
         this.blacklist = blacklist;
-        this.globalMode = blacklist.length == 0;
+        this.globalMode = blacklist.length == 0 || (blacklist.length == 1 && "*".equals(blacklist[0]));
 
         this.mixHostCase = mixHostCase;
         this.completeMixHostCase = completeMixHostCase;
