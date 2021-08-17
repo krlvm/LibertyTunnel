@@ -1,0 +1,91 @@
+[
+  {
+    "group": "http",
+    "preferences": [
+      {
+        "key": "mix_host_case",
+        "type": "checkbox",
+        "defaultValue": false
+      },
+      {
+        "key": "mix_host_case_complete",
+        "type": "checkbox",
+        "defaultValue": false
+      },
+      {
+        "key": "break_before_get",
+        "type": "checkbox",
+        "defaultValue": false
+      },
+      {
+        "key": "space_after_get",
+        "type": "checkbox",
+        "defaultValue": false
+      },
+      {
+        "key": "dot_after_host",
+        "type": "checkbox",
+        "defaultValue": true
+      },
+      {
+        "key": "mix_host_header",
+        "type": "checkbox",
+        "defaultValue": true
+      },
+      {
+        "key": "send_payload",
+        "type": "checkbox",
+        "defaultValue": false
+      }
+    ]
+  },
+  {
+    "group": "https",
+    "preferences": [
+      {
+        "key": "enable_chunking",
+        "type": "checkbox",
+        "defaultValue": true
+      },
+      {
+        "key": "chunk_size",
+        "type": "number",
+        "defaultValue": "2",
+        "dependency": "enable_chunking"
+      },
+      {
+        "key": "full_chunking",
+        "type": "checkbox",
+        "dependency": "enable_chunking"
+      },
+      {
+        "key": "enable_sni_tricks",
+        "type": "checkbox",
+        "defaultValue": false
+      },
+      {
+        "key": "sni_trick",
+        "type": "select",
+        "items": [
+          {
+            "key": "spoil"
+          },
+          {
+            "key": "fake"
+          },
+          {
+            "key": "remove"
+          }
+        ],
+        "dependency": "enable_sni_tricks"
+      },
+      {
+        "key": "fake_sni",
+        "type": "string",
+        "defaultValue": "w3.org",
+        "dependency": "sni_trick",
+        "dependencyValue": "fake"
+      }
+    ]
+  }
+]

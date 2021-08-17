@@ -1,0 +1,7 @@
+# Idea Files
+/.idea/
+/LibertyTunnel.iml
+
+# Build Files
+/build/
+/.gradle/
