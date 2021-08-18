@@ -86,7 +86,7 @@
             "key": "remove"
           }
         ],
-        "dependency": "enable_sni_tricks"
+        "dependency": "modify_sni"
       },
       {
         "key": "fake_sni",
