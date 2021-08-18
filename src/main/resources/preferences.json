@@ -61,7 +61,12 @@
         "key": "full_chunking",
         "type": "checkbox",
         "dependency": "enable_chunking"
-      },
+      }
+    ]
+  },
+  {
+    "group": "sni",
+    "preferences": [
       {
         "key": "modify_sni",
         "type": "checkbox",
