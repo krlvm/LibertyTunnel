@@ -28,7 +28,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.Arrays;
 
 public class LibertyTunnel extends PowerTunnelPlugin {
 
@@ -64,7 +63,7 @@ public class LibertyTunnel extends PowerTunnelPlugin {
 
         LOGGER.info("Loaded {} blocked websites", blacklist.length);
 
-        final boolean enableSni = config.getBoolean("enable_sni_tricks", false);
+        final boolean enableSni = config.getBoolean("modify_sni", false);
         if(enableSni) {
             proxy.setMITMEnabled(true);
         }

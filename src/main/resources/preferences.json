@@ -63,7 +63,7 @@
         "dependency": "enable_chunking"
       },
       {
-        "key": "enable_sni_tricks",
+        "key": "modify_sni",
         "type": "checkbox",
         "defaultValue": false
       },
