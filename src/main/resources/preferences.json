@@ -1,5 +1,9 @@
 [
   {
+    "key": "mirror",
+    "type": "string"
+  },
+  {
     "group": "http",
     "preferences": [
       {

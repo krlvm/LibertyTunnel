@@ -40,7 +40,7 @@ public class LibertyTunnel extends PowerTunnelPlugin {
 
         String[] blacklist = null;
 
-        final String mirror = config.get("blacklist_mirror", null);
+        final String mirror = config.get("mirror", null);
         if(mirror != null) {
             LOGGER.info("Loading blacklist from mirror...");
             try {
