@@ -79,7 +79,7 @@ public class LibertyTunnel extends PowerTunnelPlugin {
                 config.getBoolean("send_payload", false) ? 21 : 0,
                 config.getBoolean("enable_chunking", true) ? config.getInt("chunk_size", 2) : 0,
                 config.getBoolean("full_chunking", false),
-                enableSni ? SNITrick.valueOf(config.get("sni_trick", SNITrick.SPOIL.name())) : null,
+                enableSni ? SNITrick.valueOf(config.get("sni_trick", SNITrick.SPOIL.name()).toUpperCase()) : null,
                 config.get("fake_sni", "w3.org")
         ), 5);
     }
