@@ -105,7 +105,7 @@ public final class ProxyListener extends ProxyAdapter {
 
     @Override
     public void onProxyToServerRequest(@NotNull ProxyRequest request) {
-        if(request.getMethod() == HttpMethod.CONNECT) return;
+        if(request.isBlocked()) return;
         if(!isBlocked(request.address() == null ? request.headers().get("Host") : request.address().getHost())) return;
 
         if(request.headers().contains(HOST)) {
