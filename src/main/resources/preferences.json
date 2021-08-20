@@ -4,6 +4,11 @@
     "type": "string"
   },
   {
+    "key": "generate_pac",
+    "type": "checkbox",
+    "defaultValue": false
+  },
+  {
     "group": "http",
     "preferences": [
       {

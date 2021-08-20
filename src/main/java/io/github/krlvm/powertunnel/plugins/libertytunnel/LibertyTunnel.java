@@ -17,9 +17,11 @@
 
 package io.github.krlvm.powertunnel.plugins.libertytunnel;
 
+import io.github.krlvm.powertunnel.sdk.ServerAdapter;
 import io.github.krlvm.powertunnel.sdk.configuration.Configuration;
 import io.github.krlvm.powertunnel.sdk.plugin.PowerTunnelPlugin;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyServer;
+import io.github.krlvm.powertunnel.sdk.proxy.ProxyStatus;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,5 +86,24 @@ public class LibertyTunnel extends PowerTunnelPlugin {
         );
         registerProxyListener(listener, 5);
         registerProxyListener(listener.mitmListener, -5);
+
+        if(config.getBoolean("generate_pac", false)) {
+            final String[] pBlacklist = blacklist;
+            registerServerListener(new ServerAdapter() {
+                @Override
+                public void onProxyStatusChanged(@NotNull ProxyStatus status) {
+                    if (status != ProxyStatus.RUNNING) return;
+                    LOGGER.info("Saving PAC file...");
+                    try {
+                        saveTextFile(
+                                "libertytunnel.pac",
+                                PACGenerator.generatePAC(proxy.getAddress(), getInfo(), pBlacklist)
+                        );
+                    } catch (IOException ex) {
+                        LOGGER.error("Failed to save PAC file: {}", ex.getMessage(), ex);
+                    }
+                }
+            });
+        }
     }
 }
