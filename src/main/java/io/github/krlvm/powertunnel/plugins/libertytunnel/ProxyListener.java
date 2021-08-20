@@ -55,6 +55,7 @@ public final class ProxyListener extends ProxyAdapter {
     private final SNITrick sniTrick;
     private final String fakeSni;
 
+    protected final MITMListener mitmListener = new MITMListener();
 
     public ProxyListener(
             final String[] blacklist,
@@ -158,6 +159,13 @@ public final class ProxyListener extends ProxyAdapter {
     @Override
     public boolean isFullChunking(@NotNull FullAddress address) {
         return fullChunking;
+    }
+
+    private class MITMListener extends ProxyAdapter {
+        @Override
+        public boolean isMITMAllowed(@NotNull FullAddress address) {
+            return isBlocked(address);
+        }
     }
 
     @Override

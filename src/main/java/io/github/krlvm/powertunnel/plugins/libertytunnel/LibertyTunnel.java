@@ -68,7 +68,7 @@ public class LibertyTunnel extends PowerTunnelPlugin {
             proxy.setMITMEnabled(true);
         }
 
-        registerProxyListener(new ProxyListener(
+        final ProxyListener listener = new ProxyListener(
                 blacklist,
                 config.getBoolean("mix_host_case", false),
                 config.getBoolean("mix_host_case_complete", false),
@@ -81,6 +81,8 @@ public class LibertyTunnel extends PowerTunnelPlugin {
                 config.getBoolean("full_chunking", false),
                 enableSni ? SNITrick.valueOf(config.get("sni_trick", SNITrick.SPOIL.name()).toUpperCase()) : null,
                 config.get("fake_sni", "w3.org")
-        ), 5);
+        );
+        registerProxyListener(listener, 5);
+        registerProxyListener(listener.mitmListener, -5);
     }
 }
