@@ -151,26 +151,26 @@ public final class ProxyListener extends ProxyAdapter {
     }
 
     @Override
-    public int onGetChunkSize(@NotNull FullAddress address) {
-        if(!enableChunking || !isBlocked(address)) return 0;
+    public Integer onGetChunkSize(@NotNull FullAddress address) {
+        if(!enableChunking || !isBlocked(address)) return null;
         return chunkSize;
     }
 
     @Override
-    public boolean isFullChunking(@NotNull FullAddress address) {
+    public Boolean isFullChunking(@NotNull FullAddress address) {
         return fullChunking;
     }
 
     private class MITMListener extends ProxyAdapter {
         @Override
-        public boolean isMITMAllowed(@NotNull FullAddress address) {
+        public Boolean isMITMAllowed(@NotNull FullAddress address) {
             return isBlocked(address);
         }
     }
 
     @Override
     public String onGetSNI(@NotNull String hostname) {
-        if(!enableSniTricks || !isBlocked(hostname)) return hostname;
+        if(!enableSniTricks || !isBlocked(hostname)) return null;
         switch (sniTrick) {
             case REMOVE: return null;
             case SPOIL: return hostname + ".";
