@@ -87,7 +87,7 @@ public class LibertyTunnel extends PowerTunnelPlugin {
         registerProxyListener(listener, 5);
         registerProxyListener(listener.mitmListener, -5);
 
-        if(config.getBoolean("generate_pac", false)) {
+        if(config.getBoolean("generate_pac", false) && blacklist.length > 0) {
             final String[] pBlacklist = blacklist;
             registerServerListener(new ServerAdapter() {
                 @Override
