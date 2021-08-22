@@ -91,6 +91,7 @@
             "key": "remove"
           }
         ],
+        "defaultValue": "spoil",
         "dependency": "modify_sni"
       },
       {
