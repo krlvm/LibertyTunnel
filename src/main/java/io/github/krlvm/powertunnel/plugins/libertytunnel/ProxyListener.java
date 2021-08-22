@@ -144,12 +144,12 @@ public final class ProxyListener extends ProxyAdapter {
             } else {
                 request.headers().set(HOST, host);
             }
-            if(breakBeforeGet || spaceAfterGet) {
-                String method = request.getMethod().name();
-                if(breakBeforeGet) method = "\r\n" + method;
-                if(spaceAfterGet) method += ' ';
-                request.setMethod(method);
-            }
+        }
+        if(breakBeforeGet || spaceAfterGet) {
+            String method = request.getMethod().name();
+            if(breakBeforeGet) method = "\r\n" + method;
+            if(spaceAfterGet) method += ' ';
+            request.setMethod(method);
         }
     }
 
