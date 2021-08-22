@@ -107,10 +107,13 @@ public final class ProxyListener extends ProxyAdapter {
     @Override
     public void onProxyToServerRequest(@NotNull ProxyRequest request) {
         if(request.isBlocked()) return;
-        if(!isBlocked(request.address() == null ? request.headers().get("Host") : request.address().getHost())) return;
+        String host = request.headers().get(HOST);
+        if(!isBlocked(request.address() == null ?
+                (host == null ? request.getUri() : host) :
+                request.address().getHost()
+        )) return;
 
-        if(request.headers().contains(HOST)) {
-            String host = request.headers().get(HOST);
+        if(host != null) {
             if(mixHostCase) {
                 if(completeMixHostCase) {
                     StringBuilder modified = new StringBuilder();
