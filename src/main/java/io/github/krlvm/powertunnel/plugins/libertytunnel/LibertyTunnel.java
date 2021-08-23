@@ -22,13 +22,12 @@ import io.github.krlvm.powertunnel.sdk.configuration.Configuration;
 import io.github.krlvm.powertunnel.sdk.plugin.PowerTunnelPlugin;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyServer;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyStatus;
+import io.github.krlvm.powertunnel.sdk.utiities.TextReader;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URL;
 
 public class LibertyTunnel extends PowerTunnelPlugin {
@@ -45,10 +44,7 @@ public class LibertyTunnel extends PowerTunnelPlugin {
         if(mirror != null && !mirror.trim().isEmpty()) {
             LOGGER.info("Loading blacklist from mirror...");
             try {
-                final URL url = new URL(mirror);
-                try(final BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()))) {
-                    blacklist = in.lines().toArray(String[]::new);
-                }
+                blacklist = TextReader.read(new URL(mirror).openStream()).split("\n");
             } catch (IOException ex) {
                 LOGGER.warn("Failed to load blacklist from mirror, using local text file: {}", ex.getMessage(), ex);
             }
