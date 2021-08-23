@@ -42,7 +42,7 @@ public class LibertyTunnel extends PowerTunnelPlugin {
         String[] blacklist = null;
 
         final String mirror = config.get("mirror", null);
-        if(mirror != null) {
+        if(mirror != null && !mirror.trim().isEmpty()) {
             LOGGER.info("Loading blacklist from mirror...");
             try {
                 final URL url = new URL(mirror);
