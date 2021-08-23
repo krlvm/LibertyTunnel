@@ -109,7 +109,7 @@ public final class ProxyListener extends ProxyAdapter {
         if(request.isBlocked()) return;
         String host = request.headers().get(HOST);
         if(!isBlocked(request.address() == null ?
-                (host == null ? request.getUri() : host) :
+                (host == null ? FullAddress.fromString(request.getUri()).getHost() : host) :
                 request.address().getHost()
         )) return;
 
