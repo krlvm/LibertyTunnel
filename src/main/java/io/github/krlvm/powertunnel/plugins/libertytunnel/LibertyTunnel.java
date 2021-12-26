@@ -29,6 +29,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public class LibertyTunnel extends PowerTunnelPlugin {
 
@@ -38,26 +41,30 @@ public class LibertyTunnel extends PowerTunnelPlugin {
     public void onProxyInitialization(@NotNull ProxyServer proxy) {
         final Configuration config = readConfiguration();
 
-        String[] blacklist = null;
+        final Set<String> blacklistSet = new HashSet<>();
 
         final String mirror = config.get("mirror", null);
-        if(mirror != null && !mirror.trim().isEmpty()) {
-            LOGGER.info("Loading blacklist from mirror...");
-            try {
-                blacklist = TextReader.read(new URL(mirror).openStream()).split("\n");
-            } catch (IOException ex) {
-                LOGGER.warn("Failed to load blacklist from mirror, using local text file: {}", ex.getMessage(), ex);
+        if (mirror != null && !mirror.trim().isEmpty()) {
+            if ((System.currentTimeMillis() - config.getLong("last_mirror_load", 0)) <
+                    getMirrorInterval(config.get("mirror_interval", "interval_2"))) {
+                if(!loadBlacklistFromCache(blacklistSet)) {
+                    loadBlacklistFromMirror(blacklistSet, mirror, config);
+                }
+            } else {
+                if(!loadBlacklistFromMirror(blacklistSet, mirror, config)) {
+                    loadBlacklistFromCache(blacklistSet);
+                }
             }
         }
-        if(blacklist == null) {
-            try {
-                final String s = readTextFile("government-blacklist.txt");
-                blacklist = s.isEmpty() ? new String[0] : s.split("\n");
-            } catch (IOException ex) {
-                blacklist = new String[0];
-                LOGGER.error("Failed to read government blacklist: {}", ex.getMessage(), ex);
-            }
+
+        LOGGER.info("Loading local blacklist...");
+        try {
+            blacklistSet.addAll(Arrays.asList(readTextFile("government-blacklist.txt").split("\n")));
+        } catch (IOException ex) {
+            LOGGER.error("Failed to read local blacklist: {}", ex.getMessage(), ex);
         }
+
+        final String[] blacklist = blacklistSet.toArray(new String[0]);
 
         LOGGER.info("Loaded {} blocked websites", blacklist.length);
 
@@ -84,7 +91,6 @@ public class LibertyTunnel extends PowerTunnelPlugin {
         registerProxyListener(listener.mitmListener, -5);
 
         if(config.getBoolean("generate_pac", false) && blacklist.length > 0) {
-            final String[] pBlacklist = blacklist;
             registerServerListener(new ServerAdapter() {
                 @Override
                 public void onProxyStatusChanged(@NotNull ProxyStatus status) {
@@ -93,13 +99,57 @@ public class LibertyTunnel extends PowerTunnelPlugin {
                     try {
                         saveTextFile(
                                 "libertytunnel.pac",
-                                PACGenerator.generatePAC(proxy.getAddress(), getInfo(), pBlacklist)
+                                PACGenerator.generatePAC(proxy.getAddress(), getInfo(), blacklist)
                         );
                     } catch (IOException ex) {
                         LOGGER.error("Failed to save PAC file: {}", ex.getMessage(), ex);
                     }
                 }
             });
+        }
+    }
+
+    private boolean loadBlacklistFromMirror(Set<String> blacklist, String mirror, Configuration config) {
+        LOGGER.info("Loading blacklist from mirror...");
+        try {
+            final String raw = TextReader.read(new URL(mirror).openStream());
+            blacklist.addAll(Arrays.asList(raw.split("\n")));
+            try {
+                config.setLong("last_mirror_load", System.currentTimeMillis());
+                saveConfiguration();
+            } catch (IOException ex) {
+                LOGGER.warn("Failed to save the time of the last load of the blacklist from the mirror: {}", ex.getMessage(), ex);
+            }
+            try {
+                saveTextFile("government-blacklist-cache.txt", raw);
+            } catch (IOException ex) {
+                LOGGER.warn("Failed to save cached blacklist: {}", ex.getMessage(), ex);
+            }
+            return true;
+        } catch (IOException ex) {
+            LOGGER.warn("Failed to load blacklist from mirror: {}", ex.getMessage(), ex);
+            return false;
+        }
+    }
+
+    private boolean loadBlacklistFromCache(Set<String> blacklist) {
+        LOGGER.info("Loading blacklist from cache...");
+        try {
+            blacklist.addAll(Arrays.asList(readTextFile("government-blacklist-cache.txt").split("\n")));
+            return true;
+        } catch (IOException ex) {
+            LOGGER.error("Failed to read cached blacklist: {}", ex.getMessage(), ex);
+            return false;
+        }
+    }
+
+    private static long getMirrorInterval(String key) {
+        switch (key) {
+            case "interval_5": return 3 * 24 * 60 * 60 * 1000;
+            case "interval_4": return 2 * 24 * 60 * 60 * 1000;
+            case "interval_3": return 24 * 60 * 60 * 1000;
+            case "interval_1": return 0;
+            default: case "interval_2": return 12 * 60 * 60 * 1000;
         }
     }
 }
