@@ -44,14 +44,14 @@ public class LibertyTunnel extends PowerTunnelPlugin {
         final Set<String> blacklistSet = new HashSet<>();
 
         final String mirror = config.get("mirror", null);
+        final long interval = getMirrorInterval(config.get("mirror_interval", "interval_2"));
         if (mirror != null && !mirror.trim().isEmpty()) {
-            if ((System.currentTimeMillis() - config.getLong("last_mirror_load", 0)) <
-                    getMirrorInterval(config.get("mirror_interval", "interval_2"))) {
+            if ((System.currentTimeMillis() - config.getLong("last_mirror_load", 0)) < interval) {
                 if(!loadBlacklistFromCache(blacklistSet)) {
-                    loadBlacklistFromMirror(blacklistSet, mirror, config);
+                    loadBlacklistFromMirror(blacklistSet, mirror, config, interval != 0);
                 }
             } else {
-                if(!loadBlacklistFromMirror(blacklistSet, mirror, config)) {
+                if(!loadBlacklistFromMirror(blacklistSet, mirror, config, interval != 0)) {
                     loadBlacklistFromCache(blacklistSet);
                 }
             }
@@ -67,6 +67,7 @@ public class LibertyTunnel extends PowerTunnelPlugin {
         final String[] blacklist = blacklistSet.toArray(new String[0]);
 
         LOGGER.info("Loaded {} blocked websites", blacklist.length);
+        LOGGER.info("Len: {}, 1st: '{}'", blacklist.length, blacklist[0]);
 
         final boolean enableSni = config.getBoolean("modify_sni", false);
         if(enableSni) {
@@ -109,21 +110,23 @@ public class LibertyTunnel extends PowerTunnelPlugin {
         }
     }
 
-    private boolean loadBlacklistFromMirror(Set<String> blacklist, String mirror, Configuration config) {
+    private boolean loadBlacklistFromMirror(Set<String> blacklist, String mirror, Configuration config, boolean caching) {
         LOGGER.info("Loading blacklist from mirror...");
         try {
             final String raw = TextReader.read(new URL(mirror).openStream());
             blacklist.addAll(Arrays.asList(raw.split("\n")));
-            try {
-                config.setLong("last_mirror_load", System.currentTimeMillis());
-                saveConfiguration();
-            } catch (IOException ex) {
-                LOGGER.warn("Failed to save the time of the last load of the blacklist from the mirror: {}", ex.getMessage(), ex);
-            }
-            try {
-                saveTextFile("government-blacklist-cache.txt", raw);
-            } catch (IOException ex) {
-                LOGGER.warn("Failed to save cached blacklist: {}", ex.getMessage(), ex);
+            if (caching) {
+                try {
+                    config.setLong("last_mirror_load", System.currentTimeMillis());
+                    saveConfiguration();
+                } catch (IOException ex) {
+                    LOGGER.warn("Failed to save the time of the last load of the blacklist from the mirror: {}", ex.getMessage(), ex);
+                }
+                try {
+                    saveTextFile("government-blacklist-cache.txt", raw);
+                } catch (IOException ex) {
+                    LOGGER.warn("Failed to save cached blacklist: {}", ex.getMessage(), ex);
+                }
             }
             return true;
         } catch (IOException ex) {
