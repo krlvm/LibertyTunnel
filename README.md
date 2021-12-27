@@ -8,3 +8,7 @@ Anti-censorship plugin for PowerTunnel
 <a href="https://github.com/krlvm/LibertyTunnel/wiki"><img src="https://img.shields.io/badge/help-wiki-yellow?style=flat-square" alt="Help on the Wiki"/></a>
 <br>
 </div>
+
+### Credits
+* [GoodbyeDPI](https://github.com/ValdikSS/GoodbyeDPI)
+* [blockcheck](https://github.com/ValdikSS/blockcheck)
