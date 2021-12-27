@@ -67,7 +67,6 @@ public class LibertyTunnel extends PowerTunnelPlugin {
         final String[] blacklist = blacklistSet.toArray(new String[0]);
 
         LOGGER.info("Loaded {} blocked websites", blacklist.length);
-        LOGGER.info("Len: {}, 1st: '{}'", blacklist.length, blacklist[0]);
 
         final boolean enableSni = config.getBoolean("modify_sni", false);
         if(enableSni) {
