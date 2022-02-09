@@ -94,7 +94,9 @@ public class LibertyTunnel extends PowerTunnelPlugin {
                 config.get("fake_sni", "w3.org")
         );
         registerProxyListener(listener, 5);
-        registerProxyListener(listener.mitmListener, -5);
+        if (enableSni) {
+            registerProxyListener(listener.mitmListener, -5);
+        }
 
         if(config.getBoolean("generate_pac", false) && blacklist.length > 0) {
             registerServerListener(new ServerAdapter() {
