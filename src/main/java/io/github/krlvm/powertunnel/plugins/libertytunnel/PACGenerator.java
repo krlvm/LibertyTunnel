@@ -29,14 +29,12 @@ public class PACGenerator {
         for (String host : hosts) {
             if(host.startsWith("*")) {
                 // We assume it looks like "*.google.com"
-                host = host.replaceFirst("\\*", "");
-            } else if(!host.startsWith(".")) {
-                host = "." + host;
+                host = host.replaceFirst("\\*.", "");
             }
             script.append("(dnsDomainIs(host, \"").append(host).append("\"))");
             if(++i != hosts.length) script.append(" || ");
         }
-        script.append(") return 'PROXY ").append(address.toString()).append("'; }");
+        script.append(") { return 'PROXY ").append(address.toString()).append("'; } else { return 'DIRECT'; } }");
 
         return script.toString();
     }
