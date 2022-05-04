@@ -20,7 +20,7 @@ plugins {
 }
 
 group 'io.github.krlvm.powertunnel.plugins'
-version '1.0.3'
+version '1.0.4'
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
