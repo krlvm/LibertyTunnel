@@ -106,7 +106,8 @@ public final class ProxyListener extends ProxyAdapter {
 
     @Override
     public void onProxyToServerRequest(@NotNull ProxyRequest request) {
-        if(request.isBlocked()) return;
+        if(request.isBlocked() || request.isEncrypted()) return;
+
         String host = request.headers().get(HOST);
         if(!isBlocked(request.address() == null ?
                 (host == null ? FullAddress.fromString(request.getUri()).getHost() : host) :
