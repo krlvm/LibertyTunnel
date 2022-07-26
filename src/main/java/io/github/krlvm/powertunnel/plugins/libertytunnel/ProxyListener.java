@@ -17,7 +17,6 @@
 
 package io.github.krlvm.powertunnel.plugins.libertytunnel;
 
-import io.github.krlvm.powertunnel.sdk.http.HttpMethod;
 import io.github.krlvm.powertunnel.sdk.http.ProxyRequest;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyAdapter;
 import io.github.krlvm.powertunnel.sdk.types.FullAddress;
@@ -106,7 +105,8 @@ public final class ProxyListener extends ProxyAdapter {
 
     @Override
     public void onProxyToServerRequest(@NotNull ProxyRequest request) {
-        if(request.isBlocked() || request.isEncrypted()) return;
+        if(request.isBlocked() || request.isEncrypted()
+                || (request.address() != null && request.address().getPort() == 443)) return;
 
         String host = request.headers().get(HOST);
         if(!isBlocked(request.address() == null ?
