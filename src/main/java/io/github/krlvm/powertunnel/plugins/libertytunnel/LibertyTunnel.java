@@ -58,21 +58,16 @@ public class LibertyTunnel extends PowerTunnelPlugin {
         }
 
         final String[] blacklist;
-        if (proxy.areHostnamesAvailable()) {
-            LOGGER.info("Loading local blacklist...");
-            try {
-                blacklistSet.addAll(Arrays.asList(readTextFile("government-blacklist.txt").split("\n")));
-            } catch (IOException ex) {
-                LOGGER.error("Failed to read local blacklist: {}", ex.getMessage(), ex);
-            }
-
-            blacklist = blacklistSet.stream().filter(entry -> !entry.trim().isEmpty()).toArray(String[]::new);
-
-            LOGGER.info("Loaded {} blocked websites", blacklist.length);
-        } else {
-            LOGGER.warn("Blacklist is not supported when using VPN-level hostname resolving");
-            blacklist = new String[0];
+        LOGGER.info("Loading local blacklist...");
+        try {
+            blacklistSet.addAll(Arrays.asList(readTextFile("government-blacklist.txt").split("\n")));
+        } catch (IOException ex) {
+            LOGGER.error("Failed to read local blacklist: {}", ex.getMessage(), ex);
         }
+
+        blacklist = blacklistSet.stream().filter(entry -> !entry.trim().isEmpty()).toArray(String[]::new);
+
+        LOGGER.info("Loaded {} blocked websites", blacklist.length);
 
         final boolean enableSni = config.getBoolean("modify_sni", false);
         if(enableSni) {
