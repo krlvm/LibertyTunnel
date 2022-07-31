@@ -173,7 +173,7 @@ public final class ProxyListener extends ProxyAdapter {
     }
 
     @Override
-    public String onGetSNI(@NotNull String hostname) {
+    public Object onGetSNI(@NotNull String hostname) {
         if(!enableSniTricks || !isBlocked(hostname)) return null;
         switch (sniTrick) {
             case REMOVE: return null;
