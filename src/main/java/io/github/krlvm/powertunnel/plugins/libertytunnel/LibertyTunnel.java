@@ -65,7 +65,13 @@ public class LibertyTunnel extends PowerTunnelPlugin {
             LOGGER.error("Failed to read local blacklist: {}", ex.getMessage(), ex);
         }
 
-        blacklist = blacklistSet.stream().filter(entry -> !entry.trim().isEmpty()).toArray(String[]::new);
+        Set<String> filteredBlacklist = new HashSet<>();
+        for (String entry : blacklistSet) {
+            entry = entry.trim();
+            if (entry.isEmpty()) continue;
+            filteredBlacklist.add(entry.toLowerCase());
+        }
+        blacklist = filteredBlacklist.toArray(new String[0]);
 
         LOGGER.info("Loaded {} blocked websites", blacklist.length);
 
